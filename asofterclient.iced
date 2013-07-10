@@ -2,7 +2,7 @@ _U = require 'underscore'
 request = require 'request'
 cheerio = require 'cheerio'
 
-ASofterClient =
+exports = ASofterClient =
   get_archive: (cb) ->
     # calls cb on e.g. {
     #   comics: [
@@ -43,23 +43,30 @@ ASofterClient =
     # calls cb on an array
     # which is a combination of get_comic_by_url
     # and get_archive.
+    # properties are
+    #   `url`
+    #   `title`
+    #   `num`
+    #   `img_src`
+    #   `hover_text`
     ASofterClient.get_archive ({comics}) ->
       extended_datas = []
       await
         for comic, i in comics
-          f = (cb) -> ASofterClient.get_comic_by_url comic.url, (data) -> cb data
+          f = (cb) -> ASofterClient.get_comic_by_url comic.url, (data) ->
+            cb _U.extend {}, comic, data
           f defer extended_datas[i]
 
       cb? extended_datas
 
 
-# ASofterClient.get_archive ({comics}) ->
-#   console.log comics
+if require.main is module
+  # ASofterClient.get_archive ({comics}) ->
+  #   console.log comics
 
-# url = "http://www.asofterworld.com/index.php?id=988"
-# ASofterClient.get_comic_by_url url, (data) ->
-#   console.log data
+  # url = "http://www.asofterworld.com/index.php?id=988"
+  # ASofterClient.get_comic_by_url url, (data) ->
+  #   console.log data
 
-
-ASofterClient.get_all_comic_info (comic_data) ->
-  console.log comic_data
+  ASofterClient.get_all_comic_info (comic_data) ->
+    console.log comic_data
