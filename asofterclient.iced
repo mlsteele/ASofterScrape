@@ -2,7 +2,7 @@ _U = require 'underscore'
 request = require 'request'
 cheerio = require 'cheerio'
 
-exports = ASofterClient =
+module.exports = ASofterClient =
   get_archive: (cb) ->
     # calls cb on e.g. {
     #   comics: [
@@ -52,12 +52,27 @@ exports = ASofterClient =
     ASofterClient.get_archive ({comics}) ->
       extended_datas = []
       await
-        for comic, i in comics
+        _U.map comics, (comic, i) ->
           f = (cb) -> ASofterClient.get_comic_by_url comic.url, (data) ->
             cb _U.extend {}, comic, data
           f defer extended_datas[i]
 
       cb? extended_datas
+
+  get_fake_comic_info: (cb) ->
+    cb? [
+      url: 'http://www.asofterworld.com/index.php?id=987'
+      title: 'but i will put anything in my mouth that is given to me.'
+      num: '987'
+      img_src: 'http://www.asofterworld.com/clean/stakeout.jpg'
+      hover_text: 'but i will put anything in my mouth that is given to me.'
+    ,
+      url: 'http://www.asofterworld.com/index.php?id=988'
+      title: 'What\'s good for the goose.'
+      num: '988'
+      img_src: 'http://www.asofterworld.com/clean/cove.jpg'
+      hover_text: 'What\'s good for the goose.'
+    ]
 
 
 if require.main is module

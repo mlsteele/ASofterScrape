@@ -1,0 +1,11 @@
+doctype 5
+html
+  head
+  body
+    h1 A Softerer World
+
+    - for comic in comics
+      a(href=comic.url)
+        h2= comic.num
+        img(src=comic.img_src)
+        p.hover_text= comic.hover_text
